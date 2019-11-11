@@ -1,0 +1,15 @@
+{
+	"data": [{
+			"name": "Jarjit Singh",
+			"image": "https://api.adorable.io/avatars/160/jarjit@mail.com.png",
+			"email": "jarjit@mail.com",
+			"password": "123456"
+		},
+		{
+			"name": "Ismail ",
+			"image": "https://api.adorable.io/avatars/160/ismail@mail.com.png",
+			"email": "ismail@mail.com",
+			"password": "123456"
+		}
+	]
+}
