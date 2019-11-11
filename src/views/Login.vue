@@ -1,10 +1,11 @@
 <template>
-<div>
-<b-row>
-    <b-col cols="12">
+<b-container class="bv-example-row bv-example-row-flex-cols">
+<b-row class="justify-content-md-center" style="height: 100vh; text-align: center;">
+    <b-col cols="8" align-self="center">
       <h2>
         Login
       </h2>
+        <b-alert variant="warning" show v-if="!correct.check && correct.submit">Email or Password Wrong</b-alert>
       <b-jumbotron>
         <b-form @submit="onSubmit">
           <b-row class="my-1">
@@ -23,6 +24,7 @@
       </b-col>
       <b-col sm="9">
         <b-form-input
+        id="password"
         :type="'password'"
         v-model="login.password"
         ></b-form-input>
@@ -33,35 +35,60 @@
       </b-jumbotron>
     </b-col>
   </b-row>
-</div>
+</b-container>
   
 </template>
 
 <script>
 
-// import router from '../router'
+import router from '../router'
 import axios from 'axios'
 export default {
  name: 'Login',
   data (){
     return {
-      login: { email: '', password: '' }
+      login: { email: '', password: '' },
+      userData: [],
+      correct: {submit: false, check: false}
     }
   },
   created() {
-    axios.get('data.json')
+    if(!localStorage.isLoggin) {
+      axios.get('data.json')
         .then(data => {
-            // console.log(data.data.data);
+            this.userData = data.data.data
         })
+    } else {
+       router.push({
+            name: 'home',
+          }) 
+    }
   },
   methods: {
     onSubmit: async function (evt) {
       evt.preventDefault()
-      router.push({
-        name: 'room',
-        params: { name: this.login.email }
-      })
-    }
+      this.correct.submit = true
+      this.checkLogin()
+
+    },
+    checkLogin () {
+      for (let i in this.userData) {
+        if (this.userData[i].email == this.login.email && this.userData[i].password == this.login.password) {
+          localStorage.setItem('isLoggin', true)
+          localStorage.setItem('data', JSON.stringify(this.userData[i]))
+          router.push({
+            name: 'home',
+          })
+          return true
+        }
+      }
+      this.correct.check = false
+      this.login.password = ''
+      setTimeout(() => {
+        this.correct.submit = false
+        document.getElementById('password').focus()
+      }, 2000)
+    },
   }
 }
 </script>
